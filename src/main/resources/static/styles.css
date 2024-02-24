@@ -1,0 +1,12 @@
+.title-section {
+    background-color: #f0f0f0; 
+    padding: 20px; 
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+#new-student-button {
+    position:relative;
+    margin-top: 20px;
+}
