@@ -22,6 +22,12 @@ import java.util.Optional;
 public class UsersController{
     @Autowired
     private UserRepository userRepo;
+
+    @GetMapping("/")
+    public String redirectToUserView(Model model) {
+        // Redirect to the /users/view URL
+        return "redirect:/users/view";
+    }
     
     @GetMapping("/users/view")
     public String getAllUsers(Model model){
