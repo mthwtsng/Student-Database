@@ -23,12 +23,13 @@ public class UsersController{
     @Autowired
     private UserRepository userRepo;
 
+    // Redirects to the user view page when first start
     @GetMapping("/")
     public String redirectToUserView(Model model) {
-        // Redirect to the /users/view URL
         return "redirect:/users/view";
     }
     
+    // Retrieves all users and displays them on the user view page
     @GetMapping("/users/view")
     public String getAllUsers(Model model){
         List<User> users = userRepo.findAll();
@@ -37,64 +38,54 @@ public class UsersController{
         return "users/showAll";
     }
 
+    // Adds a new user based on the form data submitted
     @PostMapping("/users/add")
     public String addUser(@RequestParam Map<String, String> newuser, HttpServletResponse response){
         System.out.println("Adding user");
         String newName = newuser.get("name");
         int newWeight = Integer.parseInt(newuser.get("weight"));
-        int newHeight = Integer.parseInt(newuser.get("height")); // Corrected variable assignment
+        int newHeight = Integer.parseInt(newuser.get("height")); 
         String newHairColour = newuser.get("hair-colour");
-        double newGPA = Double.parseDouble(newuser.get("gpa")); // Corrected data type conversion
+        double newGPA = Double.parseDouble(newuser.get("gpa")); 
         userRepo.save(new User(newName, newWeight, newHeight, newHairColour, newGPA));
         response.setStatus(201);
         return "redirect:/users/view";
     }
 
+    // Deletes a user with the specified user ID
     @PostMapping("/users/delete")
     public String deleteUser(@RequestParam("userId") int userid) {
         Optional<User> optionalUser = userRepo.findById(userid);
-
-        if (optionalUser.isPresent()) {
             userRepo.delete(optionalUser.get());
             return "redirect:/users/view";
-        } else {
-            // Handle the case where the user is not found
-            return "error"; // You can customize this error handling as needed
-        }
     }
 
+    // Displays the form to change user information
     @GetMapping("/users/change")
     public String showChangeUserForm(@RequestParam("userId") int userId, Model model) {
         Optional<User> optionalUser = userRepo.findById(userId);
-
-        if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             model.addAttribute("user", user);
             return "users/change";
-        } else {
-            return "error"; // You can customize this error handling as needed
-        }
+        
     }
 
+    // Updates user information based on the form data submitted
     @PostMapping("/users/update")
     public String updateUser(@RequestParam("userId") int userId, @ModelAttribute User updatedUser) {
         Optional<User> optionalUser = userRepo.findById(userId);
 
-        if (optionalUser.isPresent()) {
-            User existingUser = optionalUser.get();
-            // Update user information
-            existingUser.setName(updatedUser.getName());
-            existingUser.setWeight(updatedUser.getWeight());
-            existingUser.setHeight(updatedUser.getHeight());
-            existingUser.setHairColour(updatedUser.getHairColour());
-            existingUser.setGpa(updatedUser.getGpa());
+        User existingUser = optionalUser.get();
+        // Update user information
+        existingUser.setName(updatedUser.getName());
+        existingUser.setWeight(updatedUser.getWeight());
+        existingUser.setHeight(updatedUser.getHeight());
+        existingUser.setHairColour(updatedUser.getHairColour());
+        existingUser.setGpa(updatedUser.getGpa());
 
-            userRepo.save(existingUser);
-            return "redirect:/users/view";
-        } else {
-            // Handle the case where the user is not found
-            return "error"; // You can customize this error handling as needed
-        }
+        userRepo.save(existingUser);
+        return "redirect:/users/view";
+        
     }
 
 
